@@ -1,0 +1,20 @@
+On veut que notre Synthétiseur :
+
+Présenter un menu :
+-L'utilisateur peut choisir un instrument
+-Il peut aussi choisir un beat (préfait dans le programme (fait par mes soins))
+-Un bouton start pour commencer.
+
+Présenter un clavier :
+-Représente toutes les notes : soit attribuer 12 touches. Allant de C- à C+
+-Representer un changement de tempo du beat sélectionner gràce à deux touches : + et -
+-Un bouton retour si la personne veut changer d'instrument ou de beat.
+
+Options : (Dans la mesure du possible pour pimper notre clavier)
+-Interface Graphique
+-Permettre a l'utilisateur de faire des loops avec plusieurs instruments.
+-Faire en sorte que l'utilisateur créé son beat.
+-Sauvegarde de données.
+
+
+

@@ -1,1 +1,3 @@
 detecteTouches()
+augmenteTempo()
+baisseTempo()

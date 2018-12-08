@@ -1,3 +1,5 @@
 detecteTouches()
+  - produitNotes()
+  - changeInstruments()
 augmenteTempo()
 baisseTempo()

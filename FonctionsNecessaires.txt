@@ -1,5 +1,18 @@
-detecteTouches()
+SOUND MAKER : 
+
   - produitNotes()
+  - produitJingle()
+  - augmenteTempo()
+  - baisseTempo()
+  - estNoteJouee()
+
+INTERFACE :
+
   - changeInstruments()
-augmenteTempo()
-baisseTempo()
+  - vaAClavier()
+  - vaAMenu()
+  - choisiBeat()
+  
+ASPECT TECHNIQUE
+
+detecteTouches()

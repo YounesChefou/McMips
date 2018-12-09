@@ -1,4 +1,4 @@
-SOUND MAKER : 
+SOUND MAKER :
 
   - produitNotes()
   - produitJingle()
@@ -12,7 +12,8 @@ INTERFACE :
   - vaAClavier()
   - vaAMenu()
   - choisiBeat()
-  
+  - creeBeat()
+
 ASPECT TECHNIQUE
 
 detecteTouches()

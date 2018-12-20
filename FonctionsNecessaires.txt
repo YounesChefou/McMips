@@ -13,7 +13,12 @@ INTERFACE :
   - vaAMenu()
   - choisiBeat()
   - creeBeat()
+  - changeVolume()
 
 ASPECT TECHNIQUE
 
 detecteTouches()
+
+IDEES SUPPLEMENTAIRES
+
+    - affichageInstrumentChoisi()

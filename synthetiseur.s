@@ -9,6 +9,16 @@ TabJ :
 	.word 60, 60, 62, 60, 64, 65, 60
 msgB :
 	.asciiz "Bienvenue sur le super Synthé 2000 !!\n Les notes sont réparties entre la lettre q : Do et k : Do\n"
+ascArt :
+	.ascii "===============================================================================\n"
+	.ascii "| ====  =   =  =     =  =======  =    =  =====   ====    ====   ====   ====   |\n"
+	.ascii "| |      = =   |=    |     |     |    |  |           =  =    = =    = =    =  |\n"
+	.ascii "| |       =    | =   |     |     |    |  |           =  |    | |    | |    |  |\n"
+	.ascii "| ====    |    |  =  |     |     |====|  ====       =   |    | |    | |    |  |\n"
+	.ascii "|    |    |    |   = |     |     |    |  |         =    |    | |    | |    |  |\n"
+	.ascii "|    |    |    |    =|     |     |    |  |        =     =    = =    = =    =  |\n"
+	.ascii "| ====    =    =     =     =     =    =  =====   =====   ====   ====   ====   |\n"
+	.asciiz "===============================================================================\n"
 msgM :
 	.ascii 	"\nMenu :\n1- Instrument\n"
 	.ascii 	"2 - Volume\n"
@@ -25,8 +35,8 @@ msgDuree:
 msgQuitMenu:
 	.asciiz "Vous avez choisi de quitter le menu. Retour sur le mode synthétiseur. \n"
 msgQuitSynthe:
-	.ascii  "\nEtes-vous sûr de vouloir quitter le synthétiseur ?\n"
-	.asciiz "y pour confirmer, n pour annuler\n"
+	.ascii  "\nEtes-vous sûr de vouloir quitter le magnifique et superbement admirable synthétiseur ?\n"
+	.asciiz "y pour nous briser le coeur, n pour continuer à t'amuser\n"
 msgErreurQuitter:
 	.asciiz "\nVeuillez entrer soit y, soit n\n"
 msgI :
@@ -41,6 +51,10 @@ msgF :
 	.text
 
 ######### DEBUT ############
+afficheArt :
+	la $a0, ascArt
+	li $v0, 4
+	syscall
 
 Jingl :	la $t0, TabJ
 	addi $t3, $t3, 0

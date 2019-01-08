@@ -1,7 +1,7 @@
 	.data
 
 TabN :
-	.word 60, 61, 62, 63 ,64, 65, 66, 67, 68, 69, 70, 71, 72 
+	.word 0, 1, 2, 3 ,4, 5, 6, 7, 8, 9, 10, 11, 12 
 
 TabT :
 	.byte 'q', 'z', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k'
@@ -75,13 +75,14 @@ Bienv :	li $v0, 4
 	syscall
 	li $t3, 60 #Registre contenant le Volume
 	li $t4, 400 #Registre contenant la Duration de la note
+	li $t6, 60 #Registre contenant le "pitch"
 
 ChoixI :la $a0, msgI
 	li $v0, 4
 	syscall
 	li $v0	5
 	syscall
-	addi $t5, $v0, 0
+	addi $t5, $v0, 0 # $t5 contient l'instrument choisi
 	beq $v0, 128, QuitterSynthe #A REVOIR
 	li $a1, 400
 
@@ -146,6 +147,7 @@ CondNote:
 	j CondNote
 Joue :
 	lw $a0, 0($t0) #Parametre de la note
+	add $a0, $a0, $t6 # On ajoute l'octace correspondant au choix de l'utilisateur (60 par défaut)
 	li $v0, 31 #Syscall pour jouer la note
 	add $a1, $t4, $zero #duration
 	add $a2, $t5, $zero

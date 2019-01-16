@@ -8,7 +8,7 @@ TabT :
 TabJ :
 	.word 60, 60, 62, 60, 64, 65, 60
 msgB :
-	.asciiz "Bienvenue sur le super Synthé 3000 !!\n Les notes sont réparties entre la lettre q : Do et k : Do\n"
+	.asciiz "Bienvenue sur le super Synthé 3000 !!\n"
 ascArt :
 	.ascii "===============================================================================\n"
 	.ascii "| ====  =   =  =     =  =======  =    =  =====   ====    ====   ====   ====   |\n"
@@ -18,7 +18,7 @@ ascArt :
 	.ascii "|    |    |    |   = |     |     |    |  |           =  |    | |    | |    |  |\n"
 	.ascii "|    |    |    |    =|     |     |    |  |           =  =    = =    = =    =  |\n"
 	.ascii "| ====    =    =     =     =     =    =  =====   ====    ====   ====   ====   |\n"
-	.asciiz "===============================================================================\n"
+	.asciiz "===============================================================================\n\n\n"
 msgM :
 	.ascii 	"\nMenu :\n1- Instrument\n"
 	.ascii	"2 - Octave\n"
@@ -26,6 +26,24 @@ msgM :
 	.ascii 	"4 - Duration de la note\n"
 	.ascii 	"5 - Quitter le menu\n"
 	.asciiz "6 - Quitter le synthétiseur\n"
+	
+SyntArt :
+	.ascii"-----------------------------------------------------\n"
+	.ascii"|   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+	.ascii"|   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+	.ascii"|   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+	.ascii"|   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+	.ascii"|   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+	.ascii"|   | z |   | e |   |   | t |   | y |   | u |   |   |\n"
+	.ascii"|   |___|   |___|   |   |___|   |___|   |___|   |   |_ \n"
+	.ascii"|     |       |     |     |       |       |     |     |\n"
+	.ascii"|     |       |     |     |       |       |     |     |\n"
+	.ascii"|  q  |   s   |  d  |  f  |   g   |   h   |  i  |  k  |\n"
+	.ascii"|     |       |     |     |       |       |     |     |\n"
+	.ascii"|     |       |     |     |       |       |     |     |\n" 
+	.ascii"-------------------------------------------------------\n\n"
+	.ascii"Appuie sur m pour retourner au menu ! et pouvoir profiter de centaines d'instruments\n"
+	.asciiz"ou encore modifier les paramètres de tes instruments préférés\n"
 msgParam:
 	.ascii "\n Appuyez sur + pour augmenter, - pour diminuer, * pour revenir à la valeur par défaut\n"
 	.asciiz "et = pour valider les paramètres.\n"
@@ -111,7 +129,9 @@ ChoixI :
 	addi $t5, $v0, 0 # $t5 contient l'instrument choisi
 	beq $v0, 128, QuitterSynthe #A REVOIR
 	li $a1, 400
-	
+	la $a0, SyntArt
+	li $v0, 4
+	syscall
 LireChar:
 	li $v0, 12	#lire un charactere
 	syscall
@@ -135,11 +155,15 @@ QuitterMenu:
 	la $a0, msgQuitMenu
 	li $v0, 4
 	syscall
+	la $a0, SyntArt
+	syscall
 	j LireChar
 
 QuitterSynthe:
 	li $v0, 4
 	la $a0, msgQuitSynthe
+	syscall
+	la $a0, SyntArt
 	syscall
 	li $v0, 12
 	syscall
@@ -290,7 +314,7 @@ AugmenterOctave:
 
 DiminuerOctave:    	
 	addi $t6, $t6, -10
-	bltz $t6, ValeurMinOctave
+	#bltz $t6, ValeurMinOctave
 	j BoucleOctave
 
 

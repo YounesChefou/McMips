@@ -1,15 +1,23 @@
 	.data
 
-TabN :
-	.word 0, 1, 2, 3 ,4, 5, 6, 7, 8, 9, 10, 11, 12 
+TabN:
+	.word 0, 1, 2, 3 ,4, 5, 6, 7, 8, 9, 10, 11, 12
 
-TabT :
+TabT:
 	.byte 'q', 'z', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k'
-TabJ :
+TabJ:
 	.word 60, 60, 62, 60, 64, 65, 60
-msgB :
+Instrument:
+	.word 1
+Volume:
+	.word 60
+Octave:
+	.word 60
+Duree:
+	.word 400
+msgB:
 	.asciiz "Bienvenue sur le super Synthé 3000 !!\n"
-ascArt :
+ascArt:
 	.ascii "===============================================================================\n"
 	.ascii "| ====  =   =  =     =  =======  =    =  =====   ====    ====   ====   ====   |\n"
 	.ascii "| |      = =   |=    |     |     |    |  |           =  =    = =    = =    =  |\n"
@@ -19,15 +27,15 @@ ascArt :
 	.ascii "|    |    |    |    =|     |     |    |  |           =  =    = =    = =    =  |\n"
 	.ascii "| ====    =    =     =     =     =    =  =====   ====    ====   ====   ====   |\n"
 	.asciiz "===============================================================================\n\n\n"
-msgM :
+msgM:
 	.ascii 	"\nMenu :\n1- Instrument\n"
 	.ascii	"2 - Octave\n"
 	.ascii 	"3 - Volume\n"
 	.ascii 	"4 - Duration de la note\n"
 	.ascii 	"5 - Quitter le menu\n"
 	.asciiz "6 - Quitter le synthétiseur\n"
-	
-SyntArt :
+
+SyntArt:
 	.ascii"-----------------------------------------------------\n"
 	.ascii"|   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 	.ascii"|   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
@@ -40,7 +48,7 @@ SyntArt :
 	.ascii"|     |       |     |     |       |       |     |     |\n"
 	.ascii"|  q  |   s   |  d  |  f  |   g   |   h   |  i  |  k  |\n"
 	.ascii"|     |       |     |     |       |       |     |     |\n"
-	.ascii"|     |       |     |     |       |       |     |     |\n" 
+	.ascii"|     |       |     |     |       |       |     |     |\n"
 	.ascii"-------------------------------------------------------\n\n"
 	.ascii"Appuie sur m pour retourner au menu ! et pouvoir profiter de centaines d'instruments\n"
 	.asciiz"ou encore modifier les paramètres de tes instruments préférés\n"
@@ -62,28 +70,28 @@ msgQuitSynthe:
 	.asciiz "y pour nous briser le coeur, n pour continuer à t'amuser\n"
 msgErreurQuitter:
 	.asciiz "\nVeuillez entrer soit y, soit n\n"
-msgI :
+msgI:
 	.ascii "\nChoisis un instrument !\n0-7   Piano	\n"
 	.ascii "8-15    Chromatic Percussion\n16-23    Organ	\n24-31    Guitar\n32-39    Bass\n"
 	.ascii "40-47    Strings\n48-55    Ensemble \n56-63    Brass\n64-71    Reed\n72-79    Pipe \n80-87    Synth Lead \n88-95    Synth Pad \n"
 	.ascii "96-103    Synth Effects	\n104-111    Ethnic 	\n"
 	.asciiz "112-119    Percussion	\n120-127    Sound Effects\nAppuie sur 128 pour quitter\n"
-msgF :
+msgF:
 	.asciiz "Merci d'avoir joué !"
 
 	.text
 
 ######### DEBUT ############
-afficheArt :
+afficheArt:
 	la $a0, ascArt
 	li $v0, 4
 	syscall
 
-Jingl :	
+Jingl:
 	la $t0, TabJ
 	addi $t3, $t3, 0
 	li $a1, 150
-loop1 :	
+loop1:
 	beq $t3, 6, Bienv
 	jal Joue
 	addi $t0, $t0, 4
@@ -95,38 +103,40 @@ loop1 :
 
 
 
-Bienv :	
+Bienv:
 	li $v0, 4
 	la $a0, msgB
 	syscall
-	li $t3, 60 #Registre contenant le Volume
-	li $t4, 400 #Registre contenant la Duration de la note
-	li $t6, 60 #Registre contenant le "pitch"
+#	li $t3, 60 #Registre contenant le Volume
+#	li $t4, 400 #Registre contenant la Duration de la note
+#	li $t6, 60 #Registre contenant le "pitch"
 
 ########### MAIN ##################
 
-Menu:	
+Menu:
 	la $a0, msgM
 	li $v0, 4
 	syscall
 	li $v0, 5
 	syscall
 
-Choix:	
+Choix:
 	beq $v0, 1, ChoixI
 	beq $v0, 2, Octave
 	beq $v0, 3, Volume
 	beq $v0, 4, Duration
 	beq $v0, 5, QuitterMenu
 	beq $v0, 6, QuitterSynthe
-	
-ChoixI :
+
+ChoixI:
 	la $a0, msgI
 	li $v0, 4
 	syscall
 	li $v0	5
 	syscall
-	addi $t5, $v0, 0 # $t5 contient l'instrument choisi
+	la $t0, Instrument
+	sw $v0, 0($t0)
+#	addi $t5, $v0, 0 # $t5 contient l'instrument choisi
 	beq $v0, 128, QuitterSynthe #A REVOIR
 	li $a1, 400
 	la $a0, SyntArt
@@ -139,11 +149,11 @@ LireChar:
 	jal fJoueNote #Joue la note correspondante
 	j LireChar	#relis une note
 
-Octave: 
+Octave:
 	jal fChgtOctave
 	j Menu
-	
-Volume:	
+
+Volume:
 	jal fChgtVolume
 	j Menu
 
@@ -163,8 +173,8 @@ QuitterSynthe:
 	li $v0, 4
 	la $a0, msgQuitSynthe
 	syscall
-	la $a0, SyntArt
-	syscall
+	# la $a0, SyntArt
+	# syscall
 	li $v0, 12
 	syscall
 	beq $v0, 'y', FIN
@@ -178,7 +188,7 @@ QuitterSynthe:
 
 ########### FONCTIONS ##############
 
-fJoueNote :
+fJoueNote:
 	la $t0, TabN #$t0 contient le tableau de Note
 	la $t1, TabT	#$t1 contient le tableau de touche
 CondNote:
@@ -187,13 +197,17 @@ CondNote:
 	addi $t1, $t1, 1 #On passe au caractere suivant
 	addi $t0, $t0, 4 #On passe a la note suivante
 	j CondNote
-Joue :
+Joue:
 	lw $a0, 0($t0) #Parametre de la note
-	add $a0, $a0, $t6 # On ajoute l'octace correspondant au choix de l'utilisateur (60 par défaut)
+	lw $t2, Octave # t2 prend l'octave actuel
+	add $a0, $a0, $t2 # On ajoute l'octace correspondant au choix de l'utilisateur (60 par défaut)
 	li $v0, 31 #Syscall pour jouer la note
-	add $a1, $t4, $zero #duration
-	add $a2, $t5, $zero
-	add $a3, $t3, $zero
+	lw $a1, Duree
+	lw $a2, Instrument
+	lw $a3, Volume
+	# add $a1, $t4, $zero #duration
+	# add $a2, $t5, $zero
+	# add $a3, $t3, $zero
 	syscall
 	jr $ra
 
@@ -201,83 +215,101 @@ fChgtVolume:
 	li $v0, 4
 	la $a0, msgParam
 	syscall
+	lw $t0, Volume					# $t0 contient la valeur contenue à l'adresse "Volume"
+	la $t1, Volume					# $t1 contient l'adresse "Volume"
+	li $t2, 126						#Valeur maximale accepté
 BoucleVol:
-	li $v0, 4		#Affichage du niveau actuel du volume
-	la $a0, msgVol
+	#Affichage du niveau actuel du volume
+	li $v0, 4
+	la $a0, msgVol 					#Affichage de "Volume => "
  	syscall
 	li $v0, 1
-	add $a0, $zero, $t3 #Le volume est enregistré dans $t3
-	syscall
+	add $a0, $zero, $t0
+	syscall 						#Affichage du volume
 	li $v0, 11
 	add $a0, $zero, '\n'
-	syscall
+	syscall 						#Saut a la ligne
 	li $v0, 12
+	#Choix de l'utilisateur
 	syscall
-	beq $v0, '=', ConfirmerVolume
-	beq $v0, '+', AugmenterVolume
-	beq $v0, '-', DiminuerVolume
-	beq $v0, '*', DefautVolume
+	beq $v0, '=', ConfirmerVolume	#Confirmer les modifications en appuyant sur =
+	beq $v0, '+', AugmenterVolume	#Augmenter le volume en appuyant sur +
+	beq $v0, '-', DiminuerVolume	#Diminuer le volume en appuyant sur -
+	beq $v0, '*', DefautVolume		#Remettre la valeur par défaut : 60
 
 AugmenterVolume:
-	addi $t3, $t3, 2
+	addi $t0, $t0, 2
+	bge  $t0, $t2, ValeurMaxVolume
 	j BoucleVol
 
-DiminuerVolume:    	
-	addi $t3, $t3, -2
+DiminuerVolume:
+	addi $t0, $t0, -2
+	bltz $t0, ValeurMinDuree
 	j BoucleVol
 
-DefautVolume: 	   
-	addi $t3, $zero, 60
+DefautVolume:
+	li $t0, 60
 	j BoucleVol
 
-ConfirmerVolume:   	
-	bgez $t3, FinVolume
-	addi $t3, $zero, 60
+ValeurMinVolume:
+	li $t0, 0
+	j BoucleVol
 
-FinVolume:	   		
+ValeurMaxVolume:
+	add $t0, $t2, $zero
+	j BoucleVol
+
+ConfirmerVolume:
+	sw $t0, 0($t1)					 #On enregistre la nouvelle valeur du volume a l'adresse designee par l'etiquette "Volume"
+
+FinVolume:
 	jr $ra
 
-fChgtDuration:	
+fChgtDuration:
 	li $v0, 4
   	la $a0, msgParam
 	syscall
+	lw $t0, Duree					# $t0 contient la valeur contenue à l'adresse "Duree"
+	la $t1, Duree					# $t1 contient l'adresse "Duree"
+#	li $t2, 10000					#Valeur maximale accepté
 BoucleDuree:
-	li $v0, 4		#Affichage du niveau actuel du volume
-	la $a0, msgDuree	#Affiche la chaine de caractères : "Duree de la note => "
+	#Affichage du niveau actuel du volume
+	li $v0, 4
+	la $a0, msgDuree				#Affiche la chaine de caractères : "Duree de la note => "
 	syscall
 	li $v0, 1
-	add $a0, $zero, $t4     #Le volume est enregistré dans $t3
+	add $a0, $zero, $t0
 	syscall
 	li $v0, 11
 	add $a0, $zero, '\n'
 	syscall
 	li $v0, 12
-	syscall				# Attend le caractère correspondant à l'action choisie
+	syscall							#Attend le caractère correspondant à l'action choisie
+	#Choix de l'utilisateur
 	beq $v0, '=', ConfirmerDuration #Confirmer les modifications en appuyant sur =
 	beq $v0, '+', AugmenterDuration #Augmenter la durée de la note en appuyant sur +
 	beq $v0, '-', DiminuerDuration 	#Diminuer la durée de la note en appuyant sur -
 	beq $v0, '*', DefautDuration 	#Remettre la valeur par défaut : 400
 
 AugmenterDuration:
-	addi $t4, $t4, 100
+	addi $t0, $t0, 100
 	j BoucleDuree
 
 DiminuerDuration:
-	addi $t4, $t4, -100
-	beqz $t4, ValeurMinDuree
+	addi $t0, $t0, -100
+	beqz $t0, ValeurMinDuree
 	j BoucleDuree
 
 DefautDuration:
-	addi $t4, $zero, 400
+	addi $t0, $zero, 400
 	j BoucleDuree
 
 ValeurMinDuree:
-	addi $t4, $zero, 100
+	addi $t0, $zero, 100
 	j BoucleDuree
 
 ConfirmerDuration:
-	bgez $t4, FinDuration
-	addi $t4, $zero, 400
+	sw $t0, 0($t1)					 #On enregistre la nouvelle valeur de la duree a l'adresse designee par l'etiquette "Duree"
 
 FinDuration:
 	jr $ra
@@ -289,48 +321,57 @@ fChgtOctave:
 	syscall
 	la $a0, msgParam
 	syscall
-	
+	lw $t0, Octave					# $t0 contient la valeur contenue à l'adresse "Octave"
+	la $t1, Octave					# $t1 contient l'adresse "Octave"
+	li $t2, 110						#Valeur maximale accepté
 BoucleOctave:
-	li $v0, 4					#Affichage du niveau actuel de l'octave
+	#Affichage du niveau actuel de l'octave
+	li $v0, 4
 	la $a0, msgOctave 				#Affiche "Note => "
  	syscall
 	li $v0, 1
-	add $a0, $zero, $t6 				#L'octave est enregistrée dans $t6
-	syscall 					# Affiche la note
+	add $a0, $zero, $t0
+	syscall 						# Affiche la note
 	li $v0, 11
-	add $a0, $zero, '\n' 				# Retour à la ligne
+	add $a0, $zero, '\n' 			# Retour à la ligne
 	syscall
 	li $v0, 12
-	syscall 					#L'utilisateur a maintenant la main pour choisir l'option qui lui convient
-	beq $v0, '=', ConfirmerOctave
-	beq $v0, '+', AugmenterOctave
-	beq $v0, '-', DiminuerOctave
-	beq $v0, '*', DefautOctave
+	syscall 						#L'utilisateur a maintenant la main pour choisir l'option qui lui convient
+	beq $v0, '=', ConfirmerOctave 	#Confirmer les modifications en appuyant sur =
+	beq $v0, '+', MonterOctave		#Monter d'une octave en appuyant sur +
+	beq $v0, '-', DescendreOctave	#Descendre d'une octave en appuyant sur -
+	beq $v0, '*', DefautOctave		#Remettre la valeur par défaut : 60
 
-AugmenterOctave:
-	addi $t6, $t6, 10
-	#sgtt ValeurMaxOctave
+MonterOctave:
+	addi $t0, $t0, 10
+	bgt	 $t0, $t2, ValeurMaxOctave
 	j BoucleOctave
 
-DiminuerOctave:    	
-	addi $t6, $t6, -10
-	#bltz $t6, ValeurMinOctave
+DescendreOctave:
+	addi $t0, $t0, -10
+	bltz $t0, ValeurMinOctave
 	j BoucleOctave
 
-
-DefautOctave: 	   
-	addi $t3, $zero, 60
+DefautOctave:
+	li $t0, 60
 	j BoucleOctave
 
-ConfirmerOctave:   	
-	bgez $t3, FinOctave
-	addi $t3, $zero, 60
+ValeurMinOctave:
+	li  $t0, 0
+	j BoucleOctave
 
-FinOctave:	   		
+ValeurMaxOctave:
+	add $t0, $t2, $zero
+	j BoucleOctave
+
+ConfirmerOctave:
+	sw $t0, 0($t1)					 #On enregistre la nouvelle octave a l'adresse designee par l'etiquette "Octave"
+
+FinOctave:
 	jr $ra
-	
+
 ########### FIN ###################
 
-FIN : 	
+FIN:
 	li $v0, 10
 	syscall

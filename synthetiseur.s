@@ -9,11 +9,11 @@ TabJ:
 	.word 60, 60, 62, 60, 64, 65, 60
 Instrument:
 	.word 1
-Volume:
+ParamVolume:
 	.word 60
-Octave:
+ParamOctave:
 	.word 60
-Duree:
+ParamDuree:
 	.word 400
 msgB:
 	.asciiz "Bienvenue sur le super Synthé 3000 !!\n"
@@ -191,32 +191,37 @@ QuitterSynthe:
 fJoueNote:
 	la $t0, TabN #$t0 contient le tableau de Note
 	la $t1, TabT	#$t1 contient le tableau de touche
+	li $t3, 0
 CondNote:
+	beq $t3, 13, FinJoueNote
 	lb $t2, 0($t1) #contient un caractere du tableau de caractere
 	beq $t2, $v0, Joue
 	addi $t1, $t1, 1 #On passe au caractere suivant
 	addi $t0, $t0, 4 #On passe a la note suivante
+	addi $t3, $t3, 1
 	j CondNote
 Joue:
 	lw $a0, 0($t0) #Parametre de la note
-	lw $t2, Octave # t2 prend l'octave actuel
+	lw $t2, ParamOctave # t2 prend l'octave actuel
 	add $a0, $a0, $t2 # On ajoute l'octace correspondant au choix de l'utilisateur (60 par défaut)
 	li $v0, 31 #Syscall pour jouer la note
-	lw $a1, Duree
+	lw $a1, ParamDuree
 	lw $a2, Instrument
-	lw $a3, Volume
+	lw $a3, ParamVolume
 	# add $a1, $t4, $zero #duration
 	# add $a2, $t5, $zero
 	# add $a3, $t3, $zero
 	syscall
+
+FinJoueNote:
 	jr $ra
 
 fChgtVolume:
 	li $v0, 4
 	la $a0, msgParam
 	syscall
-	lw $t0, Volume					# $t0 contient la valeur contenue à l'adresse "Volume"
-	la $t1, Volume					# $t1 contient l'adresse "Volume"
+	lw $t0, ParamVolume					# $t0 contient la valeur contenue à l'adresse "Volume"
+	la $t1, ParamVolume					# $t1 contient l'adresse "Volume"
 	li $t2, 126						#Valeur maximale accepté
 BoucleVol:
 	#Affichage du niveau actuel du volume
@@ -269,8 +274,8 @@ fChgtDuration:
 	li $v0, 4
   	la $a0, msgParam
 	syscall
-	lw $t0, Duree					# $t0 contient la valeur contenue à l'adresse "Duree"
-	la $t1, Duree					# $t1 contient l'adresse "Duree"
+	lw $t0, ParamDuree				# $t0 contient la valeur contenue à l'adresse "Duree"
+	la $t1, ParamDuree				# $t1 contient l'adresse "Duree"
 #	li $t2, 10000					#Valeur maximale accepté
 BoucleDuree:
 	#Affichage du niveau actuel du volume
@@ -321,8 +326,8 @@ fChgtOctave:
 	syscall
 	la $a0, msgParam
 	syscall
-	lw $t0, Octave					# $t0 contient la valeur contenue à l'adresse "Octave"
-	la $t1, Octave					# $t1 contient l'adresse "Octave"
+	lw $t0, ParamOctave					# $t0 contient la valeur contenue à l'adresse "Octave"
+	la $t1, ParamOctave					# $t1 contient l'adresse "Octave"
 	li $t2, 110						#Valeur maximale accepté
 BoucleOctave:
 	#Affichage du niveau actuel de l'octave

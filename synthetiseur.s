@@ -6,7 +6,7 @@ TabN:
 TabT:
 	.byte 'q', 'z', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k'
 TabJ:
-	.word 60, 60, 62, 60, 64, 65, 60
+	.word 00, 00, 02, 00, 04, 05, 00
 Instrument:
 	.word 1
 ParamVolume:
